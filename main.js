@@ -6,7 +6,8 @@ networkCanvas.width=300;
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
 
-const road=new Road(carCanvas.width/2,carCanvas.width*0.9);
+const laneCount = 3;
+const road=new Road(carCanvas.width/2,carCanvas.width*0.9, laneCount);
 
 const N=100;
 const cars=generateCars(N);
@@ -50,7 +51,30 @@ function generateCars(N){
     return cars;
 }
 
+//TODO: enum of car types with diffrent pics
+function generateTraffic() {
+    const numOfCars = Math.floor(Math.random() * laneCount);
+    const lastTrafficPos = traffic.slice(-1)[0].y;
+    let lane;
+    const chosenLanes = [];
+
+    for (let i = 0; i < numOfCars; i++) {
+        //TODO: Find a better way to handle this
+        do {
+            lane = Math.floor(Math.random() * laneCount);
+        } while(chosenLanes.includes(lane))
+        chosenLanes.push(lane);
+        traffic.push(new Car(road.getLaneCenter(lane),lastTrafficPos - 200,30,(60 + Math.round(Math.random() * 20 - 10)),"DUMMY",2, getRandomColor()));
+    }
+}
+
 function animate(time){
+    if(traffic.slice(-1)[0].y > bestCar.y - 700) {
+        generateTraffic();
+    }
+    if(traffic.length > 20) {
+        traffic.shift();
+    }
     for(let i=0;i<traffic.length;i++){
         traffic[i].update(road.borders,[]);
     }
