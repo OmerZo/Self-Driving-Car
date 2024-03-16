@@ -9,8 +9,12 @@ const networkCtx = networkCanvas.getContext("2d");
 const laneCount = 3;
 const road=new Road(carCanvas.width/2,carCanvas.width*0.9, laneCount);
 
-const N=100;
-const cars=generateCars(N);
+let numOfCars = 100;
+if(localStorage.getItem("numOfCars")){
+    numOfCars = JSON.parse(localStorage.getItem("numOfCars"));
+}
+const cars=generateCars(numOfCars);
+
 let bestCar=cars[0];
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
@@ -21,6 +25,14 @@ if(localStorage.getItem("bestBrain")){
         }
     }
 }
+
+/*
+TODO:
+Remove dead cars
+Auto generate new Cars
+Auto generate new Cars with best brain
+Save local storage names as const
+*/
 
 const traffic=[
     new Car(road.getLaneCenter(1),-100,30,50,"DUMMY",2,getRandomColor()),
@@ -35,12 +47,23 @@ const traffic=[
 animate();
 
 function save(){
-    localStorage.setItem("bestBrain",
-        JSON.stringify(bestCar.brain));
+    localStorage.setItem("bestBrain", JSON.stringify(bestCar.brain));
 }
 
 function discard(){
     localStorage.removeItem("bestBrain");
+}
+
+function setNumOfCars() {
+    let userNumOfCars = parseInt(prompt("How many cars do you want to generate?", numOfCars));
+    if(!isNaN(userNumOfCars)) {
+        localStorage.setItem("numOfCars", JSON.stringify(userNumOfCars));
+        reload();
+    }
+}
+
+function reload() {
+    location.reload();
 }
 
 function generateCars(N){
@@ -55,6 +78,8 @@ function generateCars(N){
 function generateTraffic() {
     const numOfCars = Math.floor(Math.random() * laneCount);
     const lastTrafficPos = traffic.slice(-1)[0].y;
+    const distFromLastTraffic = 200 + (Math.random() * 20 - 10);
+    const carSize = 60 + Math.round(Math.random() * 20 - 10);
     let lane;
     const chosenLanes = [];
 
@@ -64,7 +89,7 @@ function generateTraffic() {
             lane = Math.floor(Math.random() * laneCount);
         } while(chosenLanes.includes(lane))
         chosenLanes.push(lane);
-        traffic.push(new Car(road.getLaneCenter(lane),lastTrafficPos - 200,30,(60 + Math.round(Math.random() * 20 - 10)),"DUMMY",2, getRandomColor()));
+        traffic.push(new Car(road.getLaneCenter(lane),lastTrafficPos - distFromLastTraffic, 30, carSize,"DUMMY",2, getRandomColor()));
     }
 }
 
@@ -88,6 +113,16 @@ function animate(time){
 
     carCanvas.height=window.innerHeight;
     networkCanvas.height=window.innerHeight;
+
+    // let minCar = cars[0];
+    // for (let i = 0; i < cars.length; i++) {
+    //     let loss = cars[i].y - 1000 * cars[i].sensor.readings.map(reading => !reading ? 0:reading.offset).reduce((partialSum, a) => partialSum + a, 0);
+    //     if(loss < minCar.y) {
+    //         minCar = cars[i];
+    //     }
+    // }
+
+    // bestCar = minCar;
 
     carCtx.save();
     carCtx.translate(0,-bestCar.y+carCanvas.height*0.7);
