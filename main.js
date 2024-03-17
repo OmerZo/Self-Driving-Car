@@ -56,7 +56,7 @@ function discard(){
 
 function setNumOfCars() {
     let userNumOfCars = parseInt(prompt("How many cars do you want to generate?", numOfCars));
-    if(!isNaN(userNumOfCars)) {
+    if(!isNaN(userNumOfCars) && userNumOfCars > 0) {
         localStorage.setItem("numOfCars", JSON.stringify(userNumOfCars));
         reload();
     }
