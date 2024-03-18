@@ -12,6 +12,13 @@ body{
     flex-direction:column;
 }
 
+#info{
+    display:flex;
+    flex-direction:column;
+    padding-right: 30px;
+    text-align:center;
+}
+
 button{
     border: none;
     border-radius: 5px;

@@ -3,6 +3,11 @@ carCanvas.width=200;
 const networkCanvas=document.getElementById("networkCanvas");
 networkCanvas.width=300;
 
+const distanceInfo = document.getElementById("distanceInfo").querySelector("h3");
+const scoreInfo = document.getElementById("scoreInfo").querySelector("h3");
+const numOfCarsInfo = document.getElementById("numOfCarsInfo").querySelector("h3");
+const timeInfo = document.getElementById("timeInfo").querySelector("h3");
+
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
 
@@ -45,6 +50,8 @@ const traffic=[
 ];
 
 animate();
+const startTime = new Date().getTime();
+setInterval(updateStopwatch, 1000);
 
 function save(){
     localStorage.setItem("bestBrain", JSON.stringify(bestCar.brain));
@@ -92,6 +99,26 @@ function generateTraffic() {
         traffic.push(new Car(road.getLaneCenter(lane),lastTrafficPos - distFromLastTraffic, 30, carSize,"DUMMY",2, getRandomColor()));
     }
 }
+
+function updateInfo() {
+    distanceInfo.innerText = Math.round((bestCar.y * -1) + 100);
+    numOfCarsInfo.innerText = cars.filter(car => !car.damaged).length;
+}
+
+function updateStopwatch() {
+    const currentTime = new Date().getTime(); // get current time in milliseconds
+    const elapsedTime = currentTime - startTime; // calculate elapsed time in milliseconds
+    const seconds = Math.floor(elapsedTime / 1000) % 60; // calculate seconds
+    const minutes = Math.floor(elapsedTime / 1000 / 60) % 60; // calculate minutes
+    const hours = Math.floor(elapsedTime / 1000 / 60 / 60); // calculate hours
+    const displayTime = pad(hours) + ":" + pad(minutes) + ":" + pad(seconds); // format display time
+    timeInfo.innerHTML = displayTime; // update the display
+  }
+  
+  function pad(number) {
+    // add a leading zero if the number is less than 10
+    return (number < 10 ? "0" : "") + number;
+  }
 
 function animate(time){
     if(traffic.slice(-1)[0].y > bestCar.y - 700) {
@@ -142,5 +169,6 @@ function animate(time){
 
     networkCtx.lineDashOffset=-time/50;
     Visualizer.drawNetwork(networkCtx,bestCar.brain);
+    updateInfo();
     requestAnimationFrame(animate);
 }
