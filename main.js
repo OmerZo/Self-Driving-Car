@@ -7,6 +7,7 @@ const distanceInfo = document.getElementById("distanceInfo").querySelector("h3")
 const scoreInfo = document.getElementById("scoreInfo").querySelector("h3");
 const numOfCarsInfo = document.getElementById("numOfCarsInfo").querySelector("h3");
 const timeInfo = document.getElementById("timeInfo").querySelector("h3");
+const fileInput = document.getElementById("file-input");
 
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
@@ -59,6 +60,28 @@ function save(){
 
 function discard(){
     localStorage.removeItem("bestBrain");
+}
+
+function saveBrainToFile() {
+    const bestBrainBlob = new Blob([JSON.stringify(bestCar.brain)], { type: 'text/plain' });
+    const download = window.URL.createObjectURL(bestBrainBlob);
+    const a = document.getElementById("saveBrainToFile");
+    a.download = "Best_Car_Brain.txt";
+    a.href = download;
+    a.click();
+}
+
+function uploadBrainFromFile() {
+    const file = fileInput.files[0];
+    if(!file) {
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      bestCar.brain = JSON.parse(contents);
+    };
+    reader.readAsText(file);
 }
 
 function setNumOfCars() {
