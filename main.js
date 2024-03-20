@@ -8,7 +8,7 @@ const scoreInfo = document.getElementById("scoreInfo").querySelector("h3");
 const numOfCarsInfo = document.getElementById("numOfCarsInfo").querySelector("h3");
 const timeInfo = document.getElementById("timeInfo").querySelector("h3");
 const fileInput = document.getElementById("file-input");
-
+scoreInfo.innerText = "dfg";
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
 
@@ -142,7 +142,25 @@ function updateStopwatch() {
     // add a leading zero if the number is less than 10
     return (number < 10 ? "0" : "") + number;
   }
+function loss_function(car){
+    let loss_score = 0;
 
+    // highest
+    loss_score += car.y;
+    
+    // sensors touched as little as possible - to maximize.
+    const senssors_sum = car.sensor.readings.map(reading => !reading ? 0:reading.offset).reduce((partialSum, a) => partialSum + a, 0);
+    loss_score -= 100*senssors_sum;
+
+    // overtook as many other cars as possible
+    const overtook_cars_score = parseInt(car.y) - parseInt(traffic[0].y);
+    loss_score += 100*overtook_cars_score;
+
+    // highest speed
+    loss_score -= 1000*car.speed;
+    
+    return loss_score;
+}
 function animate(time){
     if(traffic.slice(-1)[0].y > bestCar.y - 700) {
         generateTraffic();
@@ -160,19 +178,18 @@ function animate(time){
         c=>c.y==Math.min(
             ...cars.map(c=>c.y)
         ));
+    
 
     carCanvas.height=window.innerHeight;
     networkCanvas.height=window.innerHeight;
 
-    // let minCar = cars[0];
-    // for (let i = 0; i < cars.length; i++) {
-    //     let loss = cars[i].y - 1000 * cars[i].sensor.readings.map(reading => !reading ? 0:reading.offset).reduce((partialSum, a) => partialSum + a, 0);
-    //     if(loss < minCar.y) {
-    //         minCar = cars[i];
-    //     }
-    // }
+    // Update the best car by loss function
+    let minCarIndex = cars.map(car => loss_function(car)).reduce(function(minIndex, currentValue, currentIndex, array) {
+        return currentValue < array[minIndex] ? currentIndex : minIndex;
+    }, 0);
+    bestCar = cars[minCarIndex];
 
-    // bestCar = minCar;
+    scoreInfo.innerText = String(-1 * Math.round(loss_function(bestCar)));
 
     carCtx.save();
     carCtx.translate(0,-bestCar.y+carCanvas.height*0.7);
