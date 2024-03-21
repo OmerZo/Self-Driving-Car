@@ -178,12 +178,11 @@ function animate(time){
             ...cars.map(c=>c.y)
         ));
     
-
     carCanvas.height=window.innerHeight;
     networkCanvas.height=window.innerHeight;
 
     // Update the best car by loss function
-    let minCarIndex = cars.map(car => loss_function(car)).reduce(function(minIndex, currentValue, currentIndex, array) {
+    let minCarIndex = cars.map(car => loss_function(car)).reduce((minIndex, currentValue, currentIndex, array) => {
         return currentValue < array[minIndex] ? currentIndex : minIndex;
     }, 0);
     bestCar = cars[minCarIndex];
