@@ -8,7 +8,6 @@ const scoreInfo = document.getElementById("scoreInfo").querySelector("h3");
 const numOfCarsInfo = document.getElementById("numOfCarsInfo").querySelector("h3");
 const timeInfo = document.getElementById("timeInfo").querySelector("h3");
 const fileInput = document.getElementById("file-input");
-scoreInfo.innerText = "dfg";
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
 
