@@ -187,7 +187,15 @@ function animate(time){
     }, 0);
     bestCar = cars[minCarIndex];
 
-    scoreInfo.innerText = String(-1 * Math.round(loss_function(bestCar)));
+    // normalize the score
+    let loss = -1 * Math.round(loss_function(bestCar));
+    loss = loss / 1000;
+    if (loss < 0) {
+        loss = 5 * Math.sqrt(Math.pow(1.4, loss));
+    } else {
+        loss = 5 + (loss / 3.5);
+    }
+    scoreInfo.innerText = String(Math.round(loss));
 
     carCtx.save();
     carCtx.translate(0,-bestCar.y+carCanvas.height*0.7);
