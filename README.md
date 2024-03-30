@@ -28,7 +28,7 @@ In this way you can explore a vest field of random whigts and baises at the same
 - Using a large number of cars may impact browser performance, while Using a low number of cars may mean that it will take a longer time to find a good car to work with.
 - In a case of a bad choice of a car, a situation can happen where all the cars after it will learn this bad behavior and enter a state of incorrect learning.
 - In case you don't like the best car brain you saved, and want to start the learning process again, you can use the 🗑️ button and delete the brain of the car you saved from the browser memory.
-- You can load a pre trained brain file from the local storage to start with. 
+- You can load a pre trained brain file from the local storage to start with (📤). 
 [Best_Car_Brain.txt](https://github.com/OmerZo/Self-Driving-Car/files/14812640/Best_Car_Brain.txt)
 
 ## Credits
