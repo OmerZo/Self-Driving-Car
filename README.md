@@ -4,9 +4,9 @@
 This project is a self-driving car simulation implemented in JavaScript without any external libraries.
 
 ## Learning
-Basically the learning process happens by creating many different cars with different whigts and baises randomly,
+Basically the learning process happens by creating many different cars with different weights and baises randomly,
 and every time you save the best car "brain" and refresh the game, a new set of cars will be created based on the last "brain" you saved, with a defined percentage of similarity to this brain.
-In this way you can explore a vest field of random whigts and baises at the same time to find the right parameters to avoid the obstacles.
+In this way you can explore a vest field of random weights and baises at the same time to find the right parameters to avoid the obstacles.
 
 ## Features
 - **Training Mechanism:** The learning process involves creating multiple cars with random weights and biases.
