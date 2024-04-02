@@ -148,14 +148,14 @@ function loss_function(car){
     loss_score += car.y;
     
     // sensors touched as little as possible - to maximize.
-    const senssors_sum = car.sensor.readings.map(reading => !reading ? 0:reading.offset).reduce((partialSum, a) => partialSum + a, 0);
-    loss_score -= 100*senssors_sum;
+    const senssors_sum = car.sensor.readings.length - car.sensor.readings.map(reading => !reading ? 1:reading.offset).reduce((partialSum, a) => partialSum + a, 0);
+    loss_score += 100*senssors_sum;
 
     // overtook as many other cars as possible
     const overtook_cars_score = parseInt(car.y) - parseInt(traffic[0].y);
-    loss_score += 100*overtook_cars_score;
+    // loss_score += 100*overtook_cars_score;
 
-    // highest speed
+    // // highest speed
     loss_score -= 1000*car.speed;
     
     return loss_score;
@@ -187,7 +187,15 @@ function animate(time){
     }, 0);
     bestCar = cars[minCarIndex];
 
-    scoreInfo.innerText = String(-1 * Math.round(loss_function(bestCar)));
+    // normalize the score
+    let loss = -1 * Math.round(loss_function(bestCar));
+    loss = loss / 1000;
+    if (loss < 0) {
+        loss = 5 * Math.sqrt(Math.pow(1.4, loss));
+    } else {
+        loss = 5 + (loss / 3.5);
+    }
+    scoreInfo.innerText = String(Math.round(loss));
 
     carCtx.save();
     carCtx.translate(0,-bestCar.y+carCanvas.height*0.7);
